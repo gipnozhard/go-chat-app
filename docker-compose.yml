@@ -1,0 +1,29 @@
+services:
+  postgres:
+    image: latest
+    environment:
+      POSTGRES_USER: chat_user
+      POSTGRES_PASSWORD: chat_password
+      POSTGRES_DB: chat_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: chat_user
+      DB_PASSWORD: chat_password
+      DB_NAME: chat_db
+      DB_SSL_MODE: disable
+
+volumes:
+  postgres_data:
