@@ -15,6 +15,55 @@ type ChatHandler struct {
 	service *service.ChatService // Сервис с бизнес-логикой
 }
 
+// ServeHTTP обрабатывает все входящие HTTP запросы и перенаправляет их на соответствующие методы
+// Этот метод реализует интерфейс http.Handler
+func (h *ChatHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	// Простая маршрутизация на основе пути и метода запроса
+
+	// Проверяем все возможные комбинации пути и метода:
+	switch {
+	// СЛУЧАЙ 1: Создание нового чата
+	// Путь: POST /chats
+	// Пример: POST http://localhost:8080/chats
+	case r.URL.Path == "/chats" && r.Method == "POST":
+		h.CreateChat(w, r)
+
+	// СЛУЧАЙ 2: Отправка сообщения в чат
+	// Путь: POST /chats/{id}/messages
+	// Пример: POST http://localhost:8080/chats/123/messages
+	case strings.HasPrefix(r.URL.Path, "/chats/") && strings.HasSuffix(r.URL.Path, "/messages") && r.Method == "POST":
+		h.SendMessage(w, r)
+
+	// СЛУЧАЙ 3: Получение информации о чате с сообщениями
+	// Путь: GET /chats/{id}
+	// Пример: GET http://localhost:8080/chats/123?limit=20
+
+	case strings.HasPrefix(r.URL.Path, "/chats/") && r.Method == "GET":
+		h.GetChat(w, r)
+
+	// СЛУЧАЙ 4: Удаление чата
+	// Путь: DELETE /chats/{id}
+	// Пример: DELETE http://localhost:8080/chats/123
+	case strings.HasPrefix(r.URL.Path, "/chats/") && r.Method == "DELETE":
+		h.DeleteChat(w, r)
+
+	// ВАРИАНТ 5: HEALTH CHECK (для мониторинга)
+	// Условие: путь "/health" И метод GET
+	// Используется Docker, Kubernetes и т.д. для проверки что сервер жив
+	case r.URL.Path == "/health" && r.Method == "GET":
+		// Устанавливаем заголовок Content-Type
+		w.Header().Set("Content-Type", "application/json")
+		// Пишем простой JSON ответ
+		w.Write([]byte(`{"status":"ok"}`))
+	default:
+
+		// ВАРИАНТ 6: НЕИЗВЕСТНЫЙ ПУТЬ
+		// Если ни одно из условий выше не выполнилось - путь не существует
+		// Возвращаем стандартную 404 ошибку "Not Found"
+		http.NotFound(w, r)
+	}
+}
+
 // NewChatHandler создает новый обработчик чатов
 func NewChatHandler(service *service.ChatService) *ChatHandler {
 	return &ChatHandler{service: service}

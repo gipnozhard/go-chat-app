@@ -8,5 +8,7 @@ RUN go build -o main ./cmd/
 FROM alpine:latest
 WORKDIR /app
 COPY --from=builder /app/main .
+# Копируем папку миграций
+COPY --from=builder /app/migrations ./migrations
 EXPOSE 8080
 CMD ["./main"]

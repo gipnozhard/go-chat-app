@@ -89,7 +89,7 @@ func (r *Router) recoveryMiddleware(next http.HandlerFunc) http.HandlerFunc {
 				// Логируем панику
 				log.Printf("PANIC: %v", err)
 				// Возвращаем 500 ошибку
-				http.Error(w, "Internal server error", http.StatusInternalServerError)
+				http.Error(w, "Ошибка сервера", http.StatusInternalServerError)
 			}
 		}()
 		next(w, req)

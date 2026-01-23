@@ -1,14 +1,22 @@
 services:
   postgres:
-    image: latest
+    image: postgres:16-alpine
+    container_name: chat-postgres
     environment:
-      POSTGRES_USER: chat_user
-      POSTGRES_PASSWORD: chat_password
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: chat_db
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    # Добавляем healthcheck
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
 
   app:
     build: .
@@ -16,14 +24,19 @@ services:
       - "8080:8080"
     depends_on:
       postgres:
-        condition: service_healthy
+        condition: service_healthy  # ← ждем пока БД станет здоровой
     environment:
       DB_HOST: postgres
       DB_PORT: 5432
-      DB_USER: chat_user
-      DB_PASSWORD: chat_password
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
       DB_NAME: chat_db
       DB_SSL_MODE: disable
+      APP_PORT: 8080
+    volumes:
+      - ./migrations:/app/migrations
+    # Ждем 30 секунд чтобы БД точно запустилась
+    command: sh -c "echo 'Ожидание запуска БД...' && sleep 5 && echo 'Запуск миграций...' && ./main migrate && echo 'Запуск сервера...' && ./main"
 
 volumes:
   postgres_data:

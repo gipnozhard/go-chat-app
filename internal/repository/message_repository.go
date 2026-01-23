@@ -27,10 +27,8 @@ func (r *MessageRepository) GetLastMessagesByChatID(chatID uint, limit int) ([]m
 	var messages []models.Message
 
 	// Where - фильтр по chat_id
-	// Order - сортировка по created_at DESC (сначала новые)
 	// Limit - ограничение количества
 	err := r.db.Where("chat_id = ?", chatID).
-		Order("created_at DESC").
 		Limit(limit).
 		Find(&messages).Error
 

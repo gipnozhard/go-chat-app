@@ -47,7 +47,7 @@ func InitDB() (*gorm.DB, error) {
 	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		// Если подключение не удалось, возвращаем ошибку
-		return nil, fmt.Errorf("failed to connect to database: %w", err)
+		return nil, fmt.Errorf("не удалось подключиться к базе данных: %w", err)
 	}
 
 	// Получаем низкоуровневое соединение *sql.DB из GORM
@@ -72,10 +72,10 @@ func InitDB() (*gorm.DB, error) {
 	// Проверяем соединение с БД
 	err = sqlDB.Ping()
 	if err != nil {
-		return nil, fmt.Errorf("failed to ping database: %w", err)
+		return nil, fmt.Errorf("не удалось проверить связь с базой данных: %w", err)
 	}
 
-	log.Println("✅ Database connected successfully")
+	log.Println("База данных успешно подключена!")
 	return DB, nil
 }
 
