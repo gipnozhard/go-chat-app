@@ -2,8 +2,6 @@ package models
 
 import (
 	"time"
-
-	"gorm.io/gorm"
 )
 
 // Message представляет собой модель сообщения в чате
@@ -22,7 +20,5 @@ type Message struct {
 	Text string `gorm:"type:text;not null" json:"text"`
 
 	// Временные метки, ОПИСАННИЕ МОЖНО ПОСМОТРЕТЬ models/chat.go
-	CreatedAt time.Time      `json:"created_at"`
-	UpdatedAt time.Time      `json:"updated_at"`
-	DeletedAt gorm.DeletedAt `gorm:"index" json:"-"`
+	CreatedAt time.Time `json:"created_at"`
 }

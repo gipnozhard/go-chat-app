@@ -28,10 +28,6 @@ type Chat struct {
 	// json:"created_at" - в JSON будет в формате ISO 8601
 	CreatedAt time.Time `json:"created_at"`
 
-	// UpdatedAt - время последнего обновления
-	// GORM автоматически обновляет это поле при изменении
-	UpdatedAt time.Time `json:"updated_at"`
-
 	// DeletedAt - время "мягкого" удаления (soft delete)
 	// gorm:"index" - создает индекс для ускорения поиска удаленных записей
 	// json:"-" - НЕ включать это поле в JSON ответы

@@ -22,3 +22,4 @@ clean:
 
 test:
 	@echo "Запуск тестов..."
+	go test ./internal/handler -v -run TestHealthCheck

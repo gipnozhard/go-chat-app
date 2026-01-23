@@ -8,7 +8,8 @@
 CREATE TABLE chats (
                        id SERIAL PRIMARY KEY,         -- Уникальный идентификатор, автоматически увеличивается
                        title VARCHAR(200) NOT NULL,   -- Заголовок чата, обязательное поле, максимум 200 символов
-                       created_at TIMESTAMP DEFAULT NOW() -- Дата и время создания, по умолчанию текущее время
+                       created_at TIMESTAMP DEFAULT NOW(), -- Дата и время создания, по умолчанию текущее время
+                       deleted_at TIMESTAMP
 );
 
 -- Создаем таблицу "сообщения" для хранения текста сообщений
