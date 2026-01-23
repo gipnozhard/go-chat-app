@@ -2,12 +2,12 @@ package handler
 
 import (
 	"encoding/json"
+	"go-chat-app/internal/db/service"
 	"net/http"
 	"strconv"
 	"strings"
 
 	"go-chat-app/internal/models"
-	"go-chat-app/internal/service"
 )
 
 // ChatHandler обрабатывает HTTP запросы для работы с чатами и сообщениями
